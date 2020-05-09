@@ -26,6 +26,7 @@ from .utils import instagram_int
 from .utils import randmized_sleep
 from .utils import retry
 
+from selenium.webdriver.common.keys import Keys
 
 class Logging(object):
     PREFIX = "instagram-crawler"
@@ -173,6 +174,20 @@ class InsCrawler(Logging):
                 randmized_sleep(2)
             else:
                 break
+
+    def comment_post(self,post_url="",comment=""):
+        browser = self.browser
+        
+        self.browser.get(post_url)
+        comment_btn=browser.find("._8-yf5")[1]
+        input_box=browser.find(".Ypffh")[0]
+        input_box.click()
+        randmized_sleep(1)
+        input_box=browser.find(".Ypffh")[0]
+        input_box.send_keys(comment)
+        randmized_sleep(1)
+        input_box.send_keys(Keys.ENTER)
+        randmized_sleep(2)
 
     def _get_posts_full(self, num):
         @retry()

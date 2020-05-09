@@ -19,9 +19,14 @@ def usage():
         python crawler.py profile_script -u cal_foodie -o ./output
         python crawler.py hashtag -t taiwan -o ./output
 
+        python crawler.py comment -p https://www.instagram.com/p/B_825kqHqoY/ hello_world
+
         The default number for fetching posts via hashtag is 100.
     """
 
+def comment(post_url, content):
+    ins_crawler = InsCrawler()
+    ins_crawler.comment_post(post_url,content)
 
 def get_posts_by_user(username, number, detail, debug):
     ins_crawler = InsCrawler(has_screen=debug)
@@ -62,11 +67,13 @@ def output(data, filepath):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Instagram Crawler", usage=usage())
     parser.add_argument(
-        "mode", help="options: [posts, posts_full, profile, profile_script, hashtag]"
+        "mode", help="options: [posts, posts_full, profile, profile_script, hashtag , comment ]"
     )
     parser.add_argument("-n", "--number", type=int, help="number of returned posts")
     parser.add_argument("-u", "--username", help="instagram's username")
     parser.add_argument("-t", "--tag", help="instagram's tag name")
+    parser.add_argument("-p", "--post", help="the post's url")
+    parser.add_argument("-c", "--content", help="the comment content")
     parser.add_argument("-o", "--output", help="output file name(json format)")
     parser.add_argument("--debug", action="store_true")
 
@@ -95,5 +102,9 @@ if __name__ == "__main__":
         output(
             get_posts_by_hashtag(args.tag, args.number or 100, args.debug), args.output
         )
+    elif args.mode == "comment":
+        arg_required("post")
+        arg_required("content")
+        output(comment(args.post,args.content), args.output)
     else:
         usage()
